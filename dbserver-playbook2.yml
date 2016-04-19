@@ -1,0 +1,25 @@
+---
+- hosts: all
+  tasks:
+    # simple task
+    - name: touch file
+      file: path=/tmp/ansible-touch.txt state=touch
+    # prepare (MySQL-python is needed for ansible)
+    - name: install epel
+      yum: name=epel-release state=latest
+      sudo: yes
+    - name: add remi repo
+      yum: name=http://rpms.famillecollet.com/enterprise/remi-release-6.rpm state=present
+      sudo: yes
+    - name: install packages
+      yum: name=mysql-server,MySQL-python state=latest enablerepo=remi
+      sudo: yes
+    - file: path=/var/log/mysqld state=directory owner=mysql group=mysql
+      sudo: yes
+    - service: name=mysqld state=started
+      sudo: yes
+    # create db
+    - mysql_db: name=testdb state=present encoding=utf8
+    # db user
+    - mysql_user: name=tesdb_admin host=localhost password='testpass' priv=testdb.*:all
+    - mysql_user: name=testdb_replic host='192.168.1.0/255.255.255.0' password='rppass' priv='*.*:replication slave'
