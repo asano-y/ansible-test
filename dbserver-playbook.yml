@@ -12,7 +12,7 @@
     - file: path=/var/log/mysqld state=directory owner=mysql group=mysql
     - service: name=mysqld state=started
     # create db
-    - mysql_db: name=testdb state=present encoding=utf8
+    - mysql_db: name=testdb state=present login_user=root encoding=utf8
     # db user
-    - mysql_user: name=tesdb_admin host=localhost password='testpass' priv=testdb.*:all
-    - mysql_user: name=testdb_replic host='192.168.1.0/255.255.255.0' password='rppass' priv='*.*:replication slave'
+    - mysql_user: name=tesdb_admin login_user=root host=localhost password='testpass' priv=testdb.*:all
+    - mysql_user: name=testdb_replic login_user=root host='192.168.1.0/255.255.255.0' password='rppass' priv='*.*:replication slave'
